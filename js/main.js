@@ -3,6 +3,9 @@
   var cv = document.getElementById('c');
   var ctx = cv.getContext('2d');
   var modeSel = document.getElementById('mode'), diffSel = document.getElementById('diff'), goBtn = document.getElementById('go');
+  var menuScreen = document.getElementById('main-menu'), gameScreen = document.getElementById('game-screen');
+  var menuStart = document.getElementById('menu-start'), menuCredits = document.getElementById('menu-credits');
+  var creditsPanel = document.getElementById('credits-panel'), creditsBack = document.getElementById('credits-back');
   var FONT = '"Press Start 2P", "Courier New", monospace';
   try { document.fonts.load('16px "Press Start 2P"'); } catch (e) {}
 
@@ -55,7 +58,7 @@
     initAudio();
     if (!e.repeat) { pressed[e.code] = true; }
     held[e.code] = true;
-    if (e.code === 'Enter') { startOrNext(); }
+    if (e.code === 'Enter' && menuScreen.hidden) { startOrNext(); }
   });
   window.addEventListener('keyup', function (e) { held[e.code] = false; });
   window.addEventListener('blur', function () { held = {}; });
@@ -114,6 +117,24 @@
   }
   function startMatch() { wins = [0, 0]; round = 1; newRound(); }
   function startOrNext() { if (state === 'title' || state === 'matchEnd') { startMatch(); } }
+
+  menuStart.addEventListener('click', function () {
+    initAudio();
+    menuScreen.hidden = true;
+    gameScreen.hidden = false;
+    startMatch();
+  });
+  menuCredits.addEventListener('click', function () {
+    creditsPanel.hidden = false;
+    menuStart.hidden = true;
+    menuCredits.hidden = true;
+  });
+  creditsBack.addEventListener('click', function () {
+    creditsPanel.hidden = true;
+    menuStart.hidden = false;
+    menuCredits.hidden = false;
+  });
+
   goBtn.addEventListener('click', function () { initAudio(); startOrNext(); goBtn.blur(); });
   cv.addEventListener('click', function () { initAudio(); startOrNext(); });
   modeSel.addEventListener('change', function () { modeSel.blur(); });
